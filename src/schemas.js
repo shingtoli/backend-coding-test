@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = (db) => {
+
     const createRideTableSchema = `
         CREATE TABLE Rides
         (

@@ -1,0 +1,202 @@
+swagger: "2.0"
+info:
+  description: "Ride from A to B, backend server for managing rides."
+  version: "1.0.0"
+  title: "Rides App"
+  contact:
+    email: "lishingto@gmail.com"
+  license:
+    name: "MIT"
+host: "localhost:8010"
+basePath: "/"
+tags:
+- name: "ride"
+  description: "Rides from A to B"
+schemes:
+- "http"
+paths:
+  /health:
+    get:
+      summary: "health check endpoint"
+      produces:
+      - "text/html"
+      responses:
+        "200":
+          description: "success response"
+          examples:
+            "text/html": "healthy"
+  /rides:
+    post:
+      tags:
+      - "ride"
+      summary: "Add a new Ride"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Ride to be created"
+        required: true
+        schema:
+          $ref: "#/definitions/RideCreate"
+      responses:
+        "200":
+          description: "Ride created successfully"
+          schema:
+            type: array
+            items: 
+              $ref: "#/definitions/Ride"
+          examples: 
+            "application/json":
+              - rideID: 1
+                startLat: 1.2832375
+                startLong: 103.8410841
+                endLat: 1.3841121
+                endLong: 103.7364912
+                riderName: Adam Smith
+                driverName: Alexander Potemkin
+                driverVehicle: Lada Xray
+                created: '2020-10-26 13:46:39'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    get:
+      tags:
+      - "ride"
+      summary: "Retrieve all Rides"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Rides retrieved sucessfully"
+          schema:
+            type: array
+            items: 
+              $ref: "#/definitions/Ride"
+          examples:
+            "application/json":
+              - rideID: 1
+                startLat: 1.2832375
+                startLong: 103.8410841
+                endLat: 1.3841121
+                endLong: 103.7364912
+                riderName: Adam Smith
+                driverName: Alexander Potemkin
+                driverVehicle: Lada Xray
+                created: '2020-10-26 13:46:39'
+              - rideID: 2
+                startLat: 1.2498028
+                startLong: 103.829944
+                endLat: 1.2779591
+                endLong: 103.8644958
+                riderName: Douglas MacArthur
+                driverName: Pyotr Tchaikovsky
+                driverVehicle: Marussia B2
+                created: '2020-10-26 13:53:11'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /rides/{id}:
+    get:
+      tags:
+      - "ride"
+      summary: "Retrieve single Ride by rideID"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "RideID of ride to fetch"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "ride retrieved sucessfully"
+          schema:
+            $ref: "#/definitions/Ride"
+          examples:
+            "application/json":
+              rideID: 1
+              startLat: 1.2832375
+              startLong: 103.8410841
+              endLat: 1.3841121
+              endLong: 103.7364912
+              riderName: Adam Smith
+              driverName: Alexander Potemkin
+              driverVehicle: Lada Xray
+              created: '2020-10-26 13:46:39'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+definitions:
+  Ride:
+    type: "object"
+    properties:
+      rideId:
+        type: "integer"
+        format: "int64"
+      startLat:
+        type: "number"
+        format: "double"
+      startLong:
+        type: "number"
+        format: "double"
+      endLat:
+        type: "number"
+        format: "double"
+      endLong:
+        type: "number"
+        format: "double"
+      riderName:
+        type: "string"
+      driverName:
+        type: "string"
+      driverVehicle:
+        type: "string"
+      created:
+        type: "string"
+  RideCreate:
+    type: "object"
+    properties:
+      start_lat:
+        type: "number"
+        format: "double"
+        example: 1.2832375
+      start_long:
+        type: "number"
+        format: "double"
+        example: 103.8410841
+      end_lat:
+        type: "number"
+        format: "double"
+        example: 1.3841121
+      end_long:
+        type: "number"
+        format: "double"
+        example: 103.7364912
+      rider_name:
+        type: "string"
+        example: "Adam Smith"
+      driver_name:
+        type: "string"
+        example: "Alexander Potemkin"
+      driver_vehicle:
+        type: "string"
+        example: "Lada Xray"
+  Error:
+    type: "object"
+    properties:
+      error_code:
+        type: "string"
+        enum: [RIDES_NOT_FOUND_ERROR, SERVER_ERROR, VALIDATION_ERROR]
+        example: SERVER_ERROR
+      message:
+        type: "string"
+        example: "Unknown error"
