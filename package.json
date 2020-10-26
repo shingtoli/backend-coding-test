@@ -7,9 +7,15 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha tests",
+    "unit": "mocha tests",
+    "lint": "eslint ./src",
+    "coverage": "nyc npm run unit",
+    "test": "npm run lint && npm run coverage",
     "start": "node index.js"
   },
+  "pre-push": [
+    "test"
+  ],
   "keywords": [
     "Xendit"
   ],
@@ -20,10 +26,16 @@
     "express": "^4.17.1",
     "sqlite3": "^4.0.6",
     "swagger-ui-express": "^4.1.4",
+    "winston": "^3.3.3",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "eslint": "^7.12.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.1",
     "mocha": "^8.2.0",
+    "nyc": "^15.1.0",
+    "pre-push": "^0.1.1",
     "supertest": "^4.0.2"
   }
 }
