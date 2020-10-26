@@ -13,9 +13,7 @@ Revolutionary rides application for getting from point A to B.
 5. Clone this repository and `cd` into the directory
 6. Install dependencies `npm i`
 
-## Access API Documentation ##
+## Access API Documentation on web ##
 
 1. Start the server - `npm run start`
 2. Visit <http://localhost:8010/api-docs>
-
-**Note** `application/javascript` is shown to render the JSON in pretty format in swagger, `application/json` is returned instead.
