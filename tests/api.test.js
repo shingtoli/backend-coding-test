@@ -29,4 +29,13 @@ describe('API tests', () => {
                 .expect(200, done);
         });
     });
+
+    describe('GET /api-docs', () => {
+        it('should return 200 for swagger documentation', (done) => {
+            request(app)
+                .get('/api-docs/')
+                .expect('Content-Type', 'text/html; charset=utf-8')
+                .expect(200, done);
+        });
+    });
 });
