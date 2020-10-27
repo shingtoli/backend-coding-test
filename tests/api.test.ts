@@ -1,14 +1,16 @@
-const { expect } = require('chai');
-const sinon = require('sinon');
-const request = require('supertest');
+import { expect } from 'chai';
+import sinon = require('sinon');
+import request = require('supertest');
 
-const sqlite3 = require('sqlite3').verbose();
-const initialiseApp = require('../src/app');
-const buildSchemas = require('../src/schemas');
+import { Database } from 'sqlite3';
+import { Application } from 'express';
+
+import initialiseApp from '../src/app';
+import buildSchemas from '../src/schemas';
 
 describe('API tests', () => {
-  let db;
-  let app;
+  let db: Database;
+  let app: Application;
 
   const rideData = [
     {
@@ -64,16 +66,12 @@ describe('API tests', () => {
   };
 
   before((done) => {
-    db = new sqlite3.Database(':memory:');
-    db.serialize((err) => {
-      if (err) {
-        done(err);
-        return;
-      }
+    db = new Database(':memory:');
+    db.serialize(() => {
 
       buildSchemas(db);
 
-      done();
+      return done();
     });
     app = initialiseApp(db);
   });

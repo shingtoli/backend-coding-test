@@ -1,9 +1,9 @@
-const path = require('path');
-const winston = require('winston');
+import path = require('path');
+import winston = require('winston');
 
 const logsdir = './logs';
 
-const logger = winston.createLogger({
+export default winston.createLogger({
   level: 'info',
   format: winston.format.json(),
   defaultMeta: { service: 'rides-service' },
@@ -16,5 +16,3 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: path.join(logsdir, 'combined.log') }),
   ],
 });
-
-module.exports = logger;

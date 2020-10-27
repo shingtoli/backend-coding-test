@@ -1,17 +1,15 @@
-const express = require('express');
+import express = require('express');
+import swaggerUi = require('swagger-ui-express');
+import YAML = require('yamljs');
+import bodyParser = require('body-parser');
+import sqlite3 = require('sqlite3');
 
-const app = express();
-
-const swaggerUi = require('swagger-ui-express');
-const YAML = require('yamljs');
 
 const swaggerDocument = YAML.load('./docs/swagger.yaml');
-
-const bodyParser = require('body-parser');
-
+const app = express();
 const jsonParser = bodyParser.json();
 
-module.exports = (db) => {
+export default (db: sqlite3.Database): express.Application => {
   app.get('/health', (req, res) => res.send('Healthy'));
 
   app.post('/rides', jsonParser, (req, res) => {
