@@ -1,6 +1,6 @@
 import express = require('express');
 import swaggerUi = require('swagger-ui-express');
-import YAML =  require('yamljs');
+import YAML = require('yamljs');
 import bodyParser = require('body-parser');
 import sqlite3 = require('sqlite3');
 
