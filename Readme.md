@@ -17,3 +17,9 @@ Revolutionary rides application for getting from point A to B.
 
 1. Start the server - `npm run start`
 2. Visit <http://localhost:8010/api-docs>
+
+## Load testing ##
+
+```sh
+npm run test:load
+```
