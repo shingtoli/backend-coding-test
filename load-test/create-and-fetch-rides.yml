@@ -38,4 +38,3 @@ scenarios:
       - function: 'getOffset'
       - get:
           url: "/rides?limit=50&offset={{ offset }}"
-      
