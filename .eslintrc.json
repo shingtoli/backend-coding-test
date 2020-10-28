@@ -1,0 +1,29 @@
+{
+  "root": true,
+  "env": {
+    "commonjs": false,
+    "es2021": true,
+    "node": true,
+    "mocha": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "airbnb-typescript/base"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "prefer-promise-reject-errors": 0,
+    "max-classes-per-file": 0,
+    "import/first": 0,
+    "import/prefer-default-export": 0
+  }
+}

@@ -1,156 +1,16 @@
 import express = require('express');
 import swaggerUi = require('swagger-ui-express');
 import YAML = require('yamljs');
-import bodyParser = require('body-parser');
 import sqlite3 = require('sqlite3');
-
+import rides from './rides/routes';
 
 const swaggerDocument = YAML.load('./docs/swagger.yaml');
 const app = express();
-const jsonParser = bodyParser.json();
 
 export default (db: sqlite3.Database): express.Application => {
   app.get('/health', (req, res) => res.send('Healthy'));
 
-  app.post('/rides', jsonParser, (req, res) => {
-    const startLatitude = Number(req.body.start_lat);
-    const startLongitude = Number(req.body.start_long);
-    const endLatitude = Number(req.body.end_lat);
-    const endLongitude = Number(req.body.end_long);
-    const riderName = req.body.rider_name;
-    const driverName = req.body.driver_name;
-    const driverVehicle = req.body.driver_vehicle;
-
-    if (startLatitude < -90 || startLatitude > 90
-      || startLongitude < -180 || startLongitude > 180) {
-      return res.send({
-        error_code: 'VALIDATION_ERROR',
-        message: 'Start latitude and longitude must be between -90 - 90 and -180 to 180 degrees respectively',
-      });
-    }
-
-    if (endLatitude < -90 || endLatitude > 90 || endLongitude < -180 || endLongitude > 180) {
-      return res.send({
-        error_code: 'VALIDATION_ERROR',
-        message: 'End latitude and longitude must be between -90 - 90 and -180 to 180 degrees respectively',
-      });
-    }
-
-    if (typeof riderName !== 'string' || riderName.length < 1) {
-      return res.send({
-        error_code: 'VALIDATION_ERROR',
-        message: 'Rider name must be a non empty string',
-      });
-    }
-
-    if (typeof driverName !== 'string' || driverName.length < 1) {
-      return res.send({
-        error_code: 'VALIDATION_ERROR',
-        message: 'Driver name must be a non empty string',
-      });
-    }
-
-    if (typeof driverVehicle !== 'string' || driverVehicle.length < 1) {
-      return res.send({
-        error_code: 'VALIDATION_ERROR',
-        message: 'Driver vehicle must be a non empty string',
-      });
-    }
-
-    const values = [
-      req.body.start_lat,
-      req.body.start_long,
-      req.body.end_lat,
-      req.body.end_long,
-      req.body.rider_name,
-      req.body.driver_name,
-      req.body.driver_vehicle,
-    ];
-
-    return db.run(
-      'INSERT INTO Rides(startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      values, function callback(err) {
-        if (err) {
-          return res.send({
-            error_code: 'SERVER_ERROR',
-            message: 'Unknown error',
-          });
-        }
-
-        return db.all('SELECT * FROM Rides WHERE rideID = ?', this.lastID, (error, rows) => {
-          if (error) {
-            return res.send({
-              error_code: 'SERVER_ERROR',
-              message: 'Unknown error',
-            });
-          }
-
-          return res.send(rows);
-        });
-      },
-    );
-  });
-
-  app.get('/rides', (req, res) => {
-    let sqlQuery = 'SELECT * FROM Rides';
-    const limit = Number.parseInt(req.query.limit as string);
-    const offset = Number.parseInt(req.query.offset as string);
-
-    if (limit > 0) {
-      sqlQuery = `${sqlQuery} LIMIT ${limit}`;
-
-
-    }
-
-    if (offset > 0) {
-      if (!limit) {
-        return res.send({
-          error_code: 'QUERY_ERROR',
-          message: 'Offset must be provided with limit',
-        })
-      }
-      sqlQuery = `${sqlQuery} OFFSET ${offset}`;
-    }
-
-
-    db.all(sqlQuery, (err, rows) => {
-      if (err) {
-        return res.send({
-          error_code: 'SERVER_ERROR',
-          message: 'Unknown error',
-        });
-      }
-
-      if (rows.length === 0) {
-        return res.send({
-          error_code: 'RIDES_NOT_FOUND_ERROR',
-          message: 'Could not find any rides',
-        });
-      }
-
-      return res.send(rows);
-    });
-  });
-
-  app.get('/rides/:id', (req, res) => {
-    db.all(`SELECT * FROM Rides WHERE rideID='${req.params.id}'`, (err, rows) => {
-      if (err) {
-        return res.send({
-          error_code: 'SERVER_ERROR',
-          message: 'Unknown error',
-        });
-      }
-
-      if (rows.length === 0) {
-        return res.send({
-          error_code: 'RIDES_NOT_FOUND_ERROR',
-          message: 'Could not find any rides',
-        });
-      }
-
-      return res.send(rows);
-    });
-  });
+  rides(app, db);
 
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

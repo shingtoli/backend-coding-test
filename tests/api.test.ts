@@ -68,7 +68,6 @@ describe('API tests', () => {
   before((done) => {
     db = new Database(':memory:');
     db.serialize(() => {
-
       buildSchemas(db);
 
       return done();
@@ -314,7 +313,6 @@ describe('API tests', () => {
           });
       });
     });
-
 
     it('should return only the third ride with limit and offset', (done) => {
       const expectedResponse = [rideData[2]];
