@@ -12,7 +12,8 @@
     "coverage": "nyc npm run unit",
     "test": "npm run lint && npm run coverage",
     "start": "ts-node-script index.ts",
-    "build": "tsc --build tsconfig.json"
+    "build": "tsc --build tsconfig.json",
+    "test:load": "artillery run load-test/create-and-fetch-rides.yml"
   },
   "mocha": {
     "require": [
@@ -50,6 +51,7 @@
     "@types/yamljs": "^0.2.31",
     "@typescript-eslint/eslint-plugin": "^4.6.0",
     "@typescript-eslint/parser": "^4.6.0",
+    "artillery": "^1.6.1",
     "chai": "^4.2.0",
     "eslint": "^7.12.1",
     "eslint-config-airbnb-base": "^14.2.0",
