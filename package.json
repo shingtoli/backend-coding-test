@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "unit": "mocha tests/**/*.ts",
+    "unit": "mocha tests",
     "lint": "eslint ./src",
     "coverage": "nyc npm run unit",
     "test": "npm run lint && npm run coverage",
