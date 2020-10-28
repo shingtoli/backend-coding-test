@@ -1,5 +1,7 @@
 config:
   target: "http://localhost:8010"
+  ensure:
+    p99: 50
   phases:
     - duration: 30
       arrivalRate: 100
@@ -14,11 +16,10 @@ config:
       - "rider_name"
       - "driver_name"
       - "driver_vehicle"
+  processor: './processor.js'
 scenarios:
   - name: "Create Rides"
     flow:
-      - get:
-          url: "/rides"
       - post:
           url: "/rides"
           json:
@@ -34,3 +35,7 @@ scenarios:
             as: "id"
       - get:
           url: "/rides/{{ id }}"
+      - function: 'getOffset'
+      - get:
+          url: "/rides?limit=50&offset={{ offset }}"
+      
