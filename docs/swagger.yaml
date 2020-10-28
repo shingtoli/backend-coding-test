@@ -69,6 +69,15 @@ paths:
       summary: "Retrieve all Rides"
       produces:
       - "application/json"
+      parameters:
+        - in: query
+          name: offset
+          type: integer
+          description: The number of rides to skip.
+        - in: query
+          name: limit
+          type: integer
+          description: The numbers of rides to return.
       responses:
         "200":
           description: "Rides retrieved sucessfully"
@@ -134,6 +143,8 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+
+
               
 definitions:
   Ride:
@@ -195,7 +206,7 @@ definitions:
     properties:
       error_code:
         type: "string"
-        enum: [RIDES_NOT_FOUND_ERROR, SERVER_ERROR, VALIDATION_ERROR]
+        enum: [RIDES_NOT_FOUND_ERROR, SERVER_ERROR, VALIDATION_ERROR, QUERY_ERROR]
         example: SERVER_ERROR
       message:
         type: "string"
