@@ -31,16 +31,13 @@ export class RideCreate {
     this.driverVehicle = body.driver_vehicle;
   }
 
-  export(): Array<string|number> {
-    return [
-      this.startLatitude,
-      this.startLongitude,
-      this.endLatitude,
-      this.endLongitude,
-      this.riderName,
-      this.driverName,
-      this.driverVehicle,
-    ];
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  export(): object {
+    const dbParams = {};
+    Object.entries(this).forEach(([key, value]) => {
+      dbParams[`$${key}`] = value;
+    });
+    return dbParams;
   }
 }
 
