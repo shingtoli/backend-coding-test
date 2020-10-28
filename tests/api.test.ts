@@ -282,6 +282,72 @@ describe('API tests', () => {
       });
     });
 
+    it('should return only 2 rides', (done) => {
+      const expectedResponse = [rideData[0], rideData[1]];
+
+      insertMany(rideData, () => {
+        request(app)
+          .get('/rides?limit=2')
+          .expect('Content-Type', /^application\/json/)
+          .expect(200)
+          .then((response) => {
+            expect(response.body).to.eql(expectedResponse);
+            done();
+          });
+      });
+    });
+
+    it('should return query error if offset is provided without limit', (done) => {
+      const expectedResponse = {
+        error_code: 'QUERY_ERROR',
+        message: 'Offset must be provided with limit',
+      };
+
+      insertMany(rideData, () => {
+        request(app)
+          .get('/rides?offset=3')
+          .expect('Content-Type', /^application\/json/)
+          .expect(200)
+          .then((response) => {
+            expect(response.body).to.eql(expectedResponse);
+            done();
+          });
+      });
+    });
+
+
+    it('should return only the third ride with limit and offset', (done) => {
+      const expectedResponse = [rideData[2]];
+
+      insertMany(rideData, () => {
+        request(app)
+          .get('/rides?limit=1&offset=2')
+          .expect('Content-Type', /^application\/json/)
+          .expect(200)
+          .then((response) => {
+            expect(response.body).to.eql(expectedResponse);
+            done();
+          });
+      });
+    });
+
+    it('should return rides not found when limit and offset are out of range', (done) => {
+      const expectedResponse = {
+        error_code: 'RIDES_NOT_FOUND_ERROR',
+        message: 'Could not find any rides',
+      };
+      insertMany(rideData, () => {
+        request(app)
+          .get('/rides?limit=5&offset=3')
+          .expect('Content-Type', /^application\/json/)
+          .expect(200)
+          .then((response) => {
+            expect(response.body).to.eql(expectedResponse);
+            done();
+          });
+      });
+    });
+
     it('should return rides not found when empty', (done) => {
       const expectedResponse = {
         error_code: 'RIDES_NOT_FOUND_ERROR',

@@ -22,7 +22,7 @@ export default (db: sqlite3.Database): express.Application => {
     const driverVehicle = req.body.driver_vehicle;
 
     if (startLatitude < -90 || startLatitude > 90
-        || startLongitude < -180 || startLongitude > 180) {
+      || startLongitude < -180 || startLongitude > 180) {
       return res.send({
         error_code: 'VALIDATION_ERROR',
         message: 'Start latitude and longitude must be between -90 - 90 and -180 to 180 degrees respectively',
@@ -92,7 +92,28 @@ export default (db: sqlite3.Database): express.Application => {
   });
 
   app.get('/rides', (req, res) => {
-    db.all('SELECT * FROM Rides', (err, rows) => {
+    let sqlQuery = 'SELECT * FROM Rides';
+    const limit = Number.parseInt(req.query.limit as string);
+    const offset = Number.parseInt(req.query.offset as string);
+
+    if (limit > 0) {
+      sqlQuery = `${sqlQuery} LIMIT ${limit}`;
+
+
+    }
+
+    if (offset > 0) {
+      if (!limit) {
+        return res.send({
+          error_code: 'QUERY_ERROR',
+          message: 'Offset must be provided with limit',
+        })
+      }
+      sqlQuery = `${sqlQuery} OFFSET ${offset}`;
+    }
+
+
+    db.all(sqlQuery, (err, rows) => {
       if (err) {
         return res.send({
           error_code: 'SERVER_ERROR',
