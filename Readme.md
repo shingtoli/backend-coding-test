@@ -2,6 +2,8 @@
 
 Revolutionary rides application for getting from point A to B.
 
+[Li Shing To](lishingto@gmail.com)
+
 ## Setup ##
 
 1. Install `nvm`
